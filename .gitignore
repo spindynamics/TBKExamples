@@ -1,0 +1,6 @@
+fort.*
+*.txt
+*.dat
+**/*band
+**/*dos
+**/*scf
