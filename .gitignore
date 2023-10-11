@@ -1,6 +1,9 @@
 fort.*
 *.txt
 *.dat
+*.lammpstrj
+*.xyz
 **/*band
 **/*dos
 **/*scf
+**/*sd

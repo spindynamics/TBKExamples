@@ -5,8 +5,7 @@ SHELL:=bash
 TBKOSTER_ROOT_DIR=/home/barreto/github/TBKOSTER
 EXE = TBKOSTER.x
 TBKOSTER = ${TBKOSTER_ROOT_DIR}/linux/bin/${EXE}
-TBPARAM_DIR=${TBKOSTER_ROOT_DIR}/tb_parameters
-
+TBPARAM_DIR = ${TBKOSTER_ROOT_DIR}/tb_parameters
 
 define generate_file =
  cat > in_master.orig << EOF
@@ -90,7 +89,7 @@ define generate_file =
  fixed_time_step = .true.
  alpha = 1.0
  temp = 0.0
- verbose = .true.
+ verbose = .false.
  /
 EOF
 endef
@@ -108,7 +107,6 @@ define content =
 	cd ..
 	done
 endef
-
 
 in_master: ; @$(value generate_file)
 
