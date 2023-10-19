@@ -14,10 +14,9 @@ $ECHO "Single spin dynamics of a 5 atoms Fe chain. (no damping)"
 # set the needed environment variables
 . ../../environment_variables
 
-rm -f out*
-rm -f sd/*
+rm -fr *.txt sd scf
 
-$ECHO "spin dynamics of a 5 atom chain"
+$ECHO "spin dynamics of a chain of 5 atoms"
 
 cat > in_master.txt<<EOF
 &calculation
@@ -29,7 +28,7 @@ cat > in_master.txt<<EOF
  energy = 'ev'
  length = 'ang'
  time = 'fs'
- mass='hau'
+ mass = 'hau'
  /
 &element
  ne = 1
@@ -97,11 +96,5 @@ cat > in_master.txt<<EOF
  /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
-

@@ -14,9 +14,7 @@ $ECHO "Damped Spin Dynamics of a Fe trimer-> Problem of convergence (because mag
 # set the needed environment variables
 . ../../environment_variables
 
-rm -f out*
-rm -f sd/*
-
+rm -fr sd *.txt *.lammpstrj
 
 cat > in_master.txt<<EOF
 &units
@@ -95,16 +93,9 @@ cat > in_master.txt<<EOF
  fixed_time_step = .true.
  alpha = 1.0
  temp = 0.0
- verbose = .true.
+ verbose = .false.
  /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
-
-

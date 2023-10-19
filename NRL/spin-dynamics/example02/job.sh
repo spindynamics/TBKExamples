@@ -14,6 +14,8 @@ $ECHO "Dampled spin dynamics of a 5 atoms Fe chain at several lattice parameters
 # set the needed environment variables
 . ../../environment_variables
 
+rm -fr sd a* *.txt *.lammpstrj
+
 for a in 2.05 2.10 2.15 2.20 2.25 2.30 ; do
 
 mkdir a$a
@@ -25,7 +27,7 @@ cat > in_master.txt<<EOF
  energy = 'eV'
  length = 'ang'
  time = 'fs'
- mass='hau'
+ mass = 'hau'
  /
 &calculation
  processing = 'sd'
@@ -37,9 +39,9 @@ cat > in_master.txt<<EOF
  symbol(1) = 'Fe'
  q(1) = 8.0
  q_d(1) = 7.0
- u_lcn(1) = 20.0000000000000000
+ u_lcn(1) = 20.0
  i_stoner_d(1) = 0.95
- xi_so_d(1) = 5.9999999999999998E-002
+ xi_so_d(1) = 6.0E-002
  /
 &element_tb
  filename(1) = '$TBPARAM_DIR/fe_par_fcc_bcc_sc_gga_fl'
@@ -100,14 +102,9 @@ cat > in_master.txt<<EOF
  fixed_time_step = .true.
  alpha = 1.0
  temp = 0.0
- verbose = .true.
+ verbose = .false.
  /
 EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
@@ -115,4 +112,3 @@ $BIN_DIR/TBKOSTER.x
 cp -rf sd a$a
 
 done
-

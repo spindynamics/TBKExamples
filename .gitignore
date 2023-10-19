@@ -1,7 +1,12 @@
+fort.*
 *.txt
-*.xyz
 *.dat
+*.lammpstrj
+*.xyz
 *.orig
 *.gnuplot
 *.png
-fort.*
+**/*band
+**/*dos
+**/*scf
+**/*sd
