@@ -52,7 +52,7 @@ cat > in_master.txt<<EOF
  ntag = 1
  tag(1) = 'Au'
  stag(1) = 50
- pbc = 5, 5, 0
+ pbc = 2, 2, 0
  r_coord='cartesian'
  r(1,:) =      0.0000000     0.0000000     0.0000000
  r(2,:) =      1.4424978    -0.8328265    -2.3555892
