@@ -40,7 +40,7 @@ post_processing = 'band'
  /
 &element
  ne = 1
- symbol(1) = 'J1'
+ symbol(1) = 'j'
  no(1) = 1
  o(1,1:1) = 1
  q(1) = 1.0000000000000000
@@ -62,7 +62,7 @@ post_processing = 'band'
  na = 1
  ntag = 1
  stag(1) = 1
- tag(1) = 'J'
+ tag(1) = 'j'
  pbc = 1, 1, 1
  r_coord = 'cartesian'
  r(1,:) = 0.00000000000000, 0.00000000000000, 0.00000000000000
