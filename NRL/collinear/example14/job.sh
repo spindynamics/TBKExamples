@@ -159,6 +159,8 @@ EOF
 #sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
 #mv -f in_master2.txt in_master.txt
 
+# Increase the size of the stack to avoid a nasty bug
+ulimit -s 65536
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
