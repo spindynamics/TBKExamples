@@ -15,5 +15,5 @@ export LC_ALL
 # The following should be good for most cases 
 
 PREFIX=`cd ../../../.. ; pwd`
-BIN_DIR=${PREFIX}/linux/bin
+BIN_DIR=${PREFIX}/build/bin
 TBPARAM_DIR=${PREFIX}/tb_parameters
