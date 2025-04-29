@@ -148,7 +148,7 @@ EOF
 # Display the results
 if ! command -v gnuplot &> /dev/null
 then 
-    $ECHO "The gnuplot command cound not be found. Please install gnuplot."
+    $ECHO "The gnuplot command cannot be found. Please install gnuplot."
     exit 1
 else 
     gnuplot MAE.gnuplot
