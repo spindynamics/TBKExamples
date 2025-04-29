@@ -1,24 +1,30 @@
 # Collinear examples
 
+Two types of constraints:\
+m_penalization='none' = no constraint\
+m_penalization='r' = constraint on the magnetization vector **M**
+
 |Description|Example|
 |:---|:---:|
-|Computation of the total energy as a function of the lattice parameter of Fcc Pt|**example01**|
-|Computation of PDOS of a Pt(111) surface|**example02**|
-|Computation of the band structure of Pt(111)|**example03**|
-|Computation of the total energy as a function of the lattice parameter of FM BCC Fe|**example04**|
-|  Computation of the total energy vs magnetization of Febcc. Fixed spin moment calculation|**example05**|
-|Computation of the total energy vs magnetization of Febcc. Penalization technique|**example06**|
-|Computation of a Fe cluster|**example07**|
-|Computation of the magnetization of Rhfcc as a function of lattice constant. Magnetization appears for lattice parameters above 4.3. Computation of band structure of Rhfcc|**example08**|
-|Computation of the influence of number of kpoints and the smearing method|**example09**|
-|SCF collinear spin calculation of a 5-atom Fe wire with magnetic penalization on atom 1. Penalization technique|**example10**|
-|Computation of the total energy and magnetization as a function of the lattice parameter of AF BCC Cr. Penalization technique|**example11**|
-|Computation of the total energy and magnetization as a function of the lattice parameter for FCC Co|**example12**|
-|Computation of the total energy and magnetization as a function of the lattice parameter for FCC Pt|**example13**|
-|Computation of the PDOS for Au(111)|**example14**|
-|Computation of the band structure of Au(111). To accelerate the scf calculation the out_charge.txt of example 14 is copied in in_charge.txt of example 15|**example15**|
-|Computation of the total energy and magnetization vs a of FCC Ni. The calculation are made at various Stoner parameters|**example16**|
-|Computation of the PDOS of Ni monolayer of Au(111)|**example17**|
-|Computation of the PDOS of Co-Pt L10.|**example18**|
-|Computation of the total energy of Co-Pt L10 as a function of c/a at constant volume.|**example19**|
+|Calculation of energy vs lattice parameter curve of fcc Pt| **example01**|
+|Self consistent calculation of the (111) surface of Pt. projected DOS calculation for the surface atom |**example02**|
+|Self consistent calculation of the (111) surface of Pt. band structure calculation |**example03**|
+|Self consistent calculation of magnetic bcc Fe at several lattice parameters,then as an output we can plot Etot_vs_a.dat and M_vs_a.dat|**example04**|
+|Self consistent calculation of bcc Fe for fixed-spin-moment (fixed_spin_moment=T) at various values of M to get E(M)|**example05**|
+|Comparison with SCF of Fe-bcc with penalization on the total moment of the type lambda(M-Mo)^2. Here the bcc is described by a cubic lattice with 2 atoms per unit cell and the penalization is only on atom 1. Atom is free to adapt.. |**example06**|
+|Self consistent calculation of iron cluster (cuboctahedron) verbose=.true. and the relaxation process is saved in scf->vizualization with ovito | **example07**|
+|Magnetization of Rh as a function of the lattice parameter and band structure of Rh|**example08**|
+|Study of the influence of the number of k points on the total energy and study of the influence of the smearing technique on the total energy|**example09**|
+|Self consistent calculation of a 5 atom of Fe in a wire with penalization on atom 1 m1=3 m2,m3,m4,m5 is free|**example10**|
+|Chromium bcc: magnetism as a function of lattice parameter|**example11**|
+|Self consistent calculation of fcc-Co at several lattice parameters|**example12**|
+|Apparition of magnetic moment with expansion of the lattice parameter for pcc-Pt|**example13**|
+|Au(111) fcc surface scf calculation. Projected DOS calculation for the surface atom|**example14**|
+|Au(111) fcc surface band structure calculation. To accelerate the scf calculation one can cp the out_charge.txt of example14 into in_charge.txt of example15 so that the scf calculation will restart from a converged charge. The band structure calculation is performed. Remakable agreement with pwscf calculation (Surf. Sci. 602, (2008) 893, Fig. 2)|**example15**|
+|Ni fcc magnetic with respect to lattice parameter: study of the influence of the Stoner parameter->comparison with _ab-initio_|**example16**|
+|Ni monolayer on Au fcc(111) interface, magnetic calculation|**example17**|
+|Co-Pt L10 scf + DOS|**example18**|
+|Fe-Pt L10 Etot(c/a) for FM and AF|**example19**|
 |Computation of the Fermi surface of Cu bulk and Ni bulk.|**example20**|
+|Computation of the total energy of zirconium fcc, bcc and hcp(c/a)|**example25**|
+|Computation to explore the magnetic configuration FM and AFM (+ continuous transition between the two) of B2 FeRh. For lattice parameters below a=3A the system is AFM while it becomes FM above a=3A. This is in perfect agreement with DFT calculations|**example26**|
