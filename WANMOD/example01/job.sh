@@ -9,7 +9,7 @@ if test "`echo -e`" = "-e" ; then ECHO=echo ; else ECHO="echo -e" ; fi
 $ECHO
 $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
-$ECHO "This example shows how to use TBKOSTER.x to calculate band structure of simple s-band cubic model"
+$ECHO "Computation of the band structure of simple s-band cubic model"
 
 # set the needed environment variables
 . ../environment_variables
@@ -146,7 +146,7 @@ EOF
 # Display the results
 if ! command -v gnuplot &> /dev/null
 then 
-    $ECHO "The gnuplot command cound not be found. Please install gnuplot."
+    $ECHO "The gnuplot command cannot be found. Please install gnuplot."
     exit 1
 else 
     gnuplot band/band_weight.gnuplot

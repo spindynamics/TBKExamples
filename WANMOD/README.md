@@ -2,4 +2,4 @@
 
 |Description|Example|
 |:---|:---:|
-|Calculate band structure of simple s-band cubic model|**example01**|
+|Computation of the band structure of simple s-band cubic model|**example01**|
