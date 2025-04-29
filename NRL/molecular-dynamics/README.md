@@ -1,11 +1,17 @@
-### Atomic forces & molecular dynamics
-
-|Description|Example|
-|:---|:---:|
-|Basic test for forces|**example01**|
-|Testing the forces by computing finite differences in energy|**example02**|
-|Testing the forces on a Pt trimer|**example03**|
-|Testing the forces by computing finite differences in energy for a 3D PBC system: moving the central atom bcc system|**example04**|
-|Testing the forces by computing finite differences in energy for a 2D PBC system: moving the surface layer of an Au(111) slab|**example05**|
-|Test of the forces with respect to the finite difference for an Cr trimer (non collinear)|**example06**|
-|Molecular dynamics of a Co trimer|**example07**|
+# collinear examples
+example01
+ "This example shows how to use TBKOSTER.x to compute energye and forces on a Pt dimer"
+example02
+ "This example shows how to use TBKOSTER.x to compute the forces on a Pt dimer"
+example03
+ "This example shows how to use TBKOSTER.x to compute the forces on a Pt trimer"
+example04
+ "This example shows how to use TBKOSTER.x to compute the forces on a bccPt crystal where central atom is displaced"
+example05
+ "This example shows how to use TBKOSTER.x to calculate the forces for 4 slabs of Au(111)"
+example06
+ "Forces for the Cr triangular trimer to a non-collinear magnetic calculation."
+example07
+ "damped MD for the Cr triangular trimer in a Neel non-collinear magnetic configuration."
+example08
+ "NVT MD for the Cr triangular trimer in a Neel non-collinear magnetic configuration."
