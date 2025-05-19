@@ -12,7 +12,7 @@ $ECHO
 $ECHO "Dampled spin dynamics of a 5 atoms Fe chain at several lattice parameters"
 
 # set the needed environment variables
-. ../../environment_variables
+. ../../../environment_variables
 
 rm -fr sd a* *.txt *.lammpstrj
 
