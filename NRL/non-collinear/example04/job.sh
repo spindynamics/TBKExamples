@@ -15,9 +15,9 @@ $ECHO "Due to periodic boundary conditions the spin spiral configuration is kept
 
 # set the needed environment variables
 . ../../../environment_variables
+rm -rf tempo* *.dat *.txt *.gnuplot *.png band scf
 
 mkdir scf
-rp -f out*
 
 cat > in_master.txt<<EOF
 &units
@@ -95,10 +95,6 @@ verbose = .true.
 ni_max=500
 /
 EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
 
 
 # Run TBKOSTER

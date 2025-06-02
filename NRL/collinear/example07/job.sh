@@ -14,7 +14,9 @@ $ECHO "This example shows how to use TBKOSTER.x to calculate a Fe cluster"
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f out*
+rm -rf *.dat *.txt *.gnuplot *.png scf
+
+mkdir scf
 
 cat > in_master.txt<<EOF
 &calculation

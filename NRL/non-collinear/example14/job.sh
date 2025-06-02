@@ -11,16 +11,15 @@ $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
 $ECHO "Fe monatomic wire: calculation of spin spiral by two different ways:"
 $ECHO "non-collinear calculation with 18 atoms per unit cell and theta_pen(i)=20*(i-1) i=1,18 "
-$ECHO "spin spiral calculation with one atom per unit-cell and  k_spiral=(0,0,1/2) (xyz)=(-1/2,1/2,1/2) (direct)"
+$ECHO "spin spiral calculation with one atom per unit-cell and  k_spiral=(0,0,1/18) (direct)"
 
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f out*
-rm -rf results
+rm -rf tempo* *.dat *.txt *.gnuplot *.png results band
+
 mkdir results
-rm -rf scf
-mkdir scf
+mkdir scf 
 
 $ECHO "super-cell (18 atoms) calculation"
 
@@ -33,6 +32,8 @@ mass='hau'
 /
 &calculation
 processing = 'scf'
+post_processing='txt2xyz'
+post_processing_dir='scf'
 /
 &element
 ne = 1
@@ -121,10 +122,6 @@ ni_max=500
 /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
@@ -197,10 +194,6 @@ verbose = .true.
 ni_max=500
 /
 EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
 
 
 # Run TBKOSTER

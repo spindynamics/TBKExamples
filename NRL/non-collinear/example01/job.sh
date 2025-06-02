@@ -14,9 +14,9 @@ $ECHO "This example shows how to use TBKOSTER.x to calculate band structure with
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f tempo tempo2 tempo3 tempo4
+rm -rf tempo* *.dat *.txt *.gnuplot *.png band
 
-
+mkdir band
 a=3.61
 
 $ECHO "a= $a"
@@ -125,25 +125,17 @@ cat > band/in_energy.txt<<EOF
  /
 EOF
 
-cat > band/in_dos.txt<<EOF
-&dos
- nen=100
- na_dos=1
- ia= 1
-en_min=-10
- en_max=10
+cat > band/in_band.txt<<EOF
+&band
  /
 EOF
 
 
 
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+# Run bands
+$BIN_DIR/bands.x 
 
 

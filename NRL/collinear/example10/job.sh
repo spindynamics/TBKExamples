@@ -15,7 +15,9 @@ $ECHO "penalization technique"
 # set the needed environment variables
 . ../../../environment_variables
 
+rm -rf *.dat *.txt *.gnuplot *.png scf
 
+mkdir scf
 
 cat > in_master.txt<<EOF
 &units

@@ -10,14 +10,18 @@ $ECHO
 $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
 $ECHO "This example shows how to use TBKOSTER.x to calculate the band structure of Au(111) "
-$ECHO  "To accelerate the scf calculation the out_charge.txt of example 14 is copied in in_charge.txt of example 15"
+$ECHO "Here we set ULCN to zero since it provides a better description of the Shockley state! "
+$ECHO  
 
 
 # set the needed environment variables
 . ../../../environment_variables
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf dos band
 
+mkdir band scf
+ulimit -s unlimited
 a=2.88499566724111
-rm -f out*
+
 
 cat > in_master.txt<<EOF
 &calculation
@@ -35,10 +39,10 @@ cat > in_master.txt<<EOF
  symbol(1) = 'Au'
  q(1)   = 11.0
  q_d(1) = 10
- u_lcn(1)=20
+ u_lcn(1)=0
  /
 &element_tb
- filename(1) = '$TBPARAM_DIR/au_par_fcc_bcc_sc_lda_fl'
+ filename(1) = '$TBPARAM_DIR/au_par'
  /
 &lattice
  v_factor = $a
@@ -127,14 +131,6 @@ cat > in_master.txt<<EOF
  /
 EOF
 
-cat > band/in_energy.txt<<EOF
-&energy
- smearing = 'mv'
- degauss = 0.2
- en_min = -10.0
- en_max =  10.0
- /
-EOF
 
 cat > band/in_mesh.txt<<EOF
 &mesh
@@ -152,20 +148,47 @@ cat > band/in_mesh.txt<<EOF
 /
 EOF
 
-cat > band/in_dos.txt<<EOF
-&dos
- nen=100
- na_dos=1
- ia= 1
- en_min=-10
- en_max=10
+cat > band/in_band.txt<<EOF
+&band
+ proj='site'
+ na_band = 2
+ ia_band = 1 , 25
  /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
 
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+# Run bands
+$BIN_DIR/bands.x 
+
+# Plot the results
+cat > band/band_weight.gnuplot<<EOF
+set term png enh size 700,500
+set out 'band/projbands.png'
+#set xtics ("{/Symbol G}"0,"M"0.57735,"K"0.91068,"{/Symbol G}"1.57735)
+set xrange [*:*] ; set yrange [*:*]
+set grid xtics
+stats 'band/band_weight_site_orb.dat'  u 1:2 nooutput
+set xra [STATS_min_x:STATS_max_x]
+set yra [STATS_min_y:STATS_max_y]
+set xlabel "k"
+set ylabel "E - E_F (eV)"
+set xzeroaxis
+set key opaque box width 1.0
+set style fill solid noborder
+radius(proj)=proj/200.
+#plot 'band/band_weight.dat' u 1:2 lc rgb "grey" 
+plot 'band/band_weight_site_orb.dat' i 0 u 1:2:(radius(\$3)) w circles lc rgb "red" t "{surface}", 'band/band_weight_site_orb.dat' i 1 u 1:2:(radius(\$3)) w circles lc rgb "blue" t "{bulk}"
+EOF
+
+# Display the results
+if ! command -v gnuplot &> /dev/null
+then 
+    $ECHO "The gnuplot command cound not be found. Please install gnuplot."
+    exit 1
+else 
+    gnuplot band/band_weight.gnuplot
+fi
+

@@ -13,11 +13,12 @@ $ECHO "This example shows how to use TBKOSTER.x to calculate the PDOS for Au(111
 
 # set the needed environment variables
 . ../../../environment_variables
-export OMP_NUM_THREADS=1 
-a=2.88499566724111
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf dos
 
-rm -fr dos scf *.txt
 mkdir dos scf
+
+ulimit -s unlimited
+a=2.88499566724111
 
 cat > in_master.txt<<EOF
 &calculation
@@ -52,7 +53,7 @@ cat > in_master.txt<<EOF
  ntag = 1
  tag(1) = 'Au'
  stag(1) = 50
- pbc = 2, 2, 0
+ pbc = 5, 5, 0
  r_coord='cartesian'
  r(1,:) =      0.0000000     0.0000000     0.0000000
  r(2,:) =      1.4424978    -0.8328265    -2.3555892
@@ -154,13 +155,7 @@ cat > dos/in_mesh.txt<<EOF
  /
 EOF
 
-
-# Set TBKOSTER root directory in in_master.txt
-#sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-#mv -f in_master2.txt in_master.txt
-
-# Increase the size of the stack to avoid a nasty bug
-ulimit -s 65536
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+# Run pdos
+$BIN_DIR/pdos.x 

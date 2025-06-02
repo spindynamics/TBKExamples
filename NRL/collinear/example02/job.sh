@@ -13,6 +13,8 @@ $ECHO "This example shows how to use TBKOSTER.x to calculate PDOS of a Pt(111) s
 
 # set the needed environment variables
 . ../../../environment_variables
+ulimit -s unlimited
+
 
 a=2.77185858225127
 rm -fr xyz dos scf *.txt

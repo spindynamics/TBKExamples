@@ -14,8 +14,9 @@ $ECHO "penalization technique"
 
 # set the needed environment variables
 . ../../../environment_variables
-rm -f tempo tempo2
-rm -f out*
+
+rm -f *.dat *.txt *.gnuplot *.png
+mkdir scf
 
 cat > Etot_vs_mag.dat << EOF
 @# mag  Etot
@@ -25,7 +26,7 @@ a=2.87
 for mag in 0 0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.3 2.35 2.4 2.45 2.5 2.6 2.8; do
 
   echo "mag=' $mag"
-cat > Etot_vs_mag << EOF
+cat > Etot_vs_mag.dat << EOF
 @#  mag(muB)  Etot(eV)
 EOF
 

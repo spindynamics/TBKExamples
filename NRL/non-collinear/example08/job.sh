@@ -9,121 +9,87 @@ if test "`echo -e`" = "-e" ; then ECHO=echo ; else ECHO="echo -e" ; fi
 $ECHO
 $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
-$ECHO "SCF NON-collinear spin calculation with SOC of a Fe monolayer"
-$ECHO " The E(theta) curve is evaluated for various elecronic interaction"
-$ECHO " Stoner and UJB "
+$ECHO "This example shows how to use TBKOSTER.x to calculate a Cr trimer"
 
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -rf results
-mkdir results
-rm -f out*
+rm -rf tempo* *.dat *.txt *.gnuplot *.png results band
 
-IStoner=0.95
-U=$(echo "5.0/7.0*$IStoner" |bc -l)
-J=$(echo "$U" |bc -l)
-B=$(echo "0.14*$J" |bc -l)
+mkdir scf 
 
-for e_e_interaction in stoner   ; do
-
-$ECHO 'electronic interaction' $e_e_interaction
-cat > results/Etot_vs_theta.$e_e_interaction.dat << EOF
-@# theta  Etot(eV)
-EOF
-
-
-rm -f tempo tempo2
-
-#for theta in 0 10 20 30 40 50 60 70 80 90 ; do
-for theta in 0  ; do
-$ECHO 'theta=' $theta
 cat > in_master.txt<<EOF
-&units
-energy = 'ev'
-length = 'ang'
-time = 'fs'
-mass='hau'
-/
 &calculation
-processing = 'scf'
-/
+ processing = 'scf'
+ post_processing = 'txt2xyz'
+ post_processing_dir = 'scf'
+ /
+&units
+ energy = 'eV'
+ length = 'ang'
+ time = 'fs'
+ mass='hau'
+ /
 &element
-ne = 1
-symbol(1) = 'Fe'
-q(1)   = 8.0
-q_d(1) = 7.0
-u_lcn(1) = 20.0
-i_stoner_d(1) = $IStoner
-u_dd(1)= $U
-j_dd(1)=$J
-b(1) = $B
-xi_so_d(1) = 0.06
-/
+ ne = 1
+ symbol(1) = 'Cr'
+ q(1) = 6.0
+ q_d(1) = 5.0
+ u_lcn(1) = 20.0000000000000000
+ i_stoner_d(1) = 0.82
+ xi_so_d(1) = 0.0
+ /
 &element_tb
-filename(1) = '$TBPARAM_DIR/fe_par_fcc_bcc_sc_gga_fl'
-/
+ filename(1) = '$TBPARAM_DIR/cr_par_fcc_bcc_sc_gga_fl'
+ /
 &lattice
-v_factor = 2.25
-v(1,:) =  1.0,  0.0,  0.0
-v(2,:) =  0.0,  1.0,  0.0
-v(3,:) =  0.0,  0.0,  10
-/
+ v_factor = 2.
+ v(1,:) = 1.000000000000000, 0.0000000000000000, 0.0000000000000000
+ v(2,:) = 0.0000000000000000, 1.000000000000000, 0.0000000000000000
+ v(3,:) = 0.0000000000000000, 0.0000000000000000, 1.0000000000000000
+ /
 &atom
-ns = 4
-na = 1
-ntag = 1
-stag(1) = 1
-tag(1) = 'Fe'
-pbc = 5, 5, 0
-r(1,:) = 0.0, 0.0, 0.0
-m_listing = 'by_tag'
-m_coord = 'spherical'
-m(1,:) = 3.0, $theta, 0.0
-lambda_pen_listing = 'by_tag'
-lambda_pen(1) = 5.0
-/
+ ns = 4
+ na = 3
+ ntag = 1
+ stag(1) = 3
+ tag(1) = 'Cr_trimer'
+ pbc = 0, 0, 0
+ r(1,:) = 0.0000000000000000, 0.0000000000000000, 0.0
+ r(2,:) = 0.86602540378443864676,-0.5, 0.0
+ r(3,:) = 0.86602540378443864676, 0.5, 0.0
+ m_listing = 'by_atom'
+ m_coord = 'spherical'
+ m(1,:) = 3.1800000000000000, 30.0000000000000000,    180.0000000000000000
+ m(2,:) = 3.1800000000000000, 30.0000000000000000,   -60.0000000000000000
+ m(3,:) = 3.1800000000000000, 30.0000000000000000,    60.0000000000000000
+ lambda_pen_listing= 'by_tag'
+ lambda_pen(1) = 0.0
+ m_coord = 'spherical'
+ /
 &mesh
-type = 'mp'
-gx = 20, 20, 1
-dx = 0, 0, 0
-/
+ type = 'mp'
+ gx = 1, 1, 1
+ dx = 0, 0, 0
+ /
 &hamiltonian_tb
-m_penalization = 'theta'
-e_e_interaction = '$e_e_interaction'
-/
+ m_penalization = 'none'
+ /
 &energy
-smearing = 'mv'
-degauss = 0.2
-/
+ smearing = 'mv'
+ degauss = 0.05
+ /
 &mixing
-alpha = 0.1
-/
+ alpha = 0.1
+ /
 &scf
-delta_en = 0.00001
-delta_q  = 0.00001
-verbose = .true.
-ni_max=500
-/
+ delta_en = 0.00001
+ delta_q  = 0.00001
+ verbose = .true.
+ ni_max = 200
+ /
 EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
 
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
-
-cat > tempo << EOF
-theta= $theta
-EOF
-
-cat tempo out_energy.txt>>tempo2
-done
-
-grep -e 'theta=' -e 'en =' tempo2 | awk '/theta/{theta = $(NF)}/en/{print theta, $(NF)}' >> results/Etot_vs_theta.$e_e_interaction.dat
-
-rm -f tempo tempo2 
-
-done

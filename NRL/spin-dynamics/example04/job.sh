@@ -9,12 +9,15 @@ if test "`echo -e`" = "-e" ; then ECHO=echo ; else ECHO="echo -e" ; fi
 $ECHO
 $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
-$ECHO "Damped Spin Dynamics of a Fe trimer-> Problem of convergence (because magnetization amplitude fixed)"
+$ECHO "Damped Spin Dynamics of a Fe trimer"
 
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -fr sd *.txt *.lammpstrj
+rm -rf tempo* *.dat *.txt *.gnuplot *.png sd
+mkdir sd
+
+
 
 cat > in_master.txt<<EOF
 &units
@@ -93,9 +96,11 @@ cat > in_master.txt<<EOF
  fixed_time_step = .true.
  alpha = 1.0
  temp = 0.0
- verbose = .false.
+ verbose = .true.
  /
 EOF
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+
+

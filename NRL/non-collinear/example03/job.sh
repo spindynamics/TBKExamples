@@ -15,9 +15,9 @@ $ECHO "this the simplest magnetic excitation"
 
 # set the needed environment variables
 . ../../../environment_variables
+rm -rf tempo* *.dat *.txt *.gnuplot *.png band scf
 
 mkdir scf
-rm -f out*
 
 cat > in_master.txt<<EOF
 &units
@@ -65,8 +65,8 @@ r(4,:) = 0.0, 0.0, 0.6
 r(5,:) = 0.0, 0.0, 0.8
 m_listing = 'by_tag'
 m_coord = 'spherical'
-m(1,:) = 3.0, 180.0, 0.0
-m(2,:) = 3.0, 0.0, 0.0
+m(1,:) = 3.0, 90.0, 0.0
+m(2,:) = 3.0, 90.0, 180.0
 /
 &mesh
 type = 'mp'
@@ -90,10 +90,6 @@ verbose = .true.
 ni_max=200
 /
 EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
 
 
 # Run TBKOSTER

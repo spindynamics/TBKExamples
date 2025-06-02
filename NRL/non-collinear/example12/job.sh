@@ -15,10 +15,11 @@ $ECHO "super-cell spin collinear (up down) or non-collinear spin spiral with k_s
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f out*
-rm -rf results
+rm -rf tempo* *.dat *.txt *.gnuplot *.png results band
+
 mkdir results
 mkdir scf
+
 
 cat > in_master.txt<<EOF
 &calculation
@@ -83,16 +84,10 @@ m(2,:) = -1.0, 0.0, 0.0
  /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
 
 cp out_log.txt results/out_log_super_cell.txt
-
 
 cat > in_master.txt<<EOF
 &calculation
@@ -153,10 +148,6 @@ m(1,:) =  1.0, 90.0, 0.0
  verbose = .true.
  /
 EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
 
 
 # Run TBKOSTER

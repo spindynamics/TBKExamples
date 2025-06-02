@@ -14,6 +14,9 @@ $ECHO "This example shows how to use TBKOSTER.x to calculate the total energy vs
 # set the needed environment variables
 . ../../../environment_variables
 
+\rm -rf scf
+mkdir scf
+
 # remove existing stuffs
 rm -f *.dat *.txt *.gnuplot *.png
 
@@ -73,7 +76,7 @@ for a in 3.80 3.82 3.84 3.86 3.88 3.90 3.92 3.94 3.96 3.98 4.00; do
     &scf
     delta_en = 0.0001
     delta_q = 0.0001
-    verbose = .false.
+    verbose = .true.
     ni_max = 200
     /
 EOF

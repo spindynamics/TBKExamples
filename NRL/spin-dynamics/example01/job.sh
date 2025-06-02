@@ -14,9 +14,10 @@ $ECHO "Single spin dynamics of a 5 atoms Fe chain. (no damping)"
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -fr *.txt sd scf
+rm -rf tempo* *.dat *.txt *.gnuplot *.png sd
+mkdir sd
 
-$ECHO "spin dynamics of a chain of 5 atoms"
+$ECHO "spin dynamics of a 5 atom chain"
 
 cat > in_master.txt<<EOF
 &calculation
@@ -28,7 +29,7 @@ cat > in_master.txt<<EOF
  energy = 'ev'
  length = 'ang'
  time = 'fs'
- mass = 'hau'
+ mass='hau'
  /
 &element
  ne = 1
@@ -98,3 +99,4 @@ EOF
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+

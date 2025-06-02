@@ -9,13 +9,16 @@ if test "`echo -e`" = "-e" ; then ECHO=echo ; else ECHO="echo -e" ; fi
 $ECHO
 $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
-$ECHO "This example shows how to use TBKOSTER.x to calculate the total energy and magnetization versus a for Ptfcc"
+$ECHO "This example shows how to use TBKOSTER.x to calculate the total energy and magnetization versus a for Ptfcc includiing SOC"
+
 
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f tempo tempo2 tempo3 tempo4
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf
+
 mkdir scf
+
 
 cat > Etot_vs_a.dat << EOF
 @#  a(A)  Etot(eV)
@@ -115,4 +118,4 @@ done
 grep -e 'a=' -e 'en =' tempo2 | awk '/a/{a = $(NF)}/en/{print a, $(NF)}' >> Etot_vs_a.dat
 grep -e 'a=' -e 'm_r_tot =' tempo4 | awk '/a/{a = $(NF)}/m_r_tot/{print a, $(NF-1)}' >> M_vs_a.dat
 
-rm -f tempo tempo2 tempo3 tempo4
+rm -f tempo*

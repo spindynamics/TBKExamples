@@ -15,7 +15,7 @@ $ECHO "fixed spin moment calculation"
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -fr scf tempo tempo2 *.txt *.dat 
+rm -fr scf tempo* *.txt *.dat *.gnuplot *.png
 
 cat > Etot_vs_mag.dat << EOF
 #  mag(muB)  Etot(eV)

@@ -9,18 +9,16 @@ if test "`echo -e`" = "-e" ; then ECHO=echo ; else ECHO="echo -e" ; fi
 $ECHO
 $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
-$ECHO "SCF NON-collinear spin calculation of a 4-atom Fe wire"
-$ECHO "The initial magnetization is a spin spiral of period 5a "
-$ECHO "Due to periodic boundary conditions the spin spiral configuration is kept during scf"
+$ECHO "SCF NON-collinear spin-spiral calculation of a monatomic Fe wire"
+$ECHO "a minimum is found for q.ne.0 hence a spin spiral solution will develop"
 
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f out*
-rm -rf results
+rm -rf tempo* *.dat *.txt *.gnuplot *.png results band
+
 mkdir results
 
-rm -f tempo tempo2 
 
 $ECHO "spin-spiral calculation"
 
@@ -95,10 +93,6 @@ ni_max=500
 /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
@@ -114,5 +108,5 @@ done
 
 grep -e 'k_spiral=' -e 'en =' tempo2 | awk '/k/{k = $(NF)}/en/{print k, $(NF)}' >> results/Etot_vs_kspiral.dat
 
-rm -f tempo tempo2
+rm -f tempo*
 

@@ -14,9 +14,9 @@ $ECHO "This example shows how to use TBKOSTER.x to calculate band structure of a
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -rf results
-mkdir results
-rm -f out*
+rm -rf tempo* *.dat *.txt *.gnuplot *.png results band
+
+mkdir results band
 
 IStoner=0.95
 
@@ -24,10 +24,6 @@ IStoner=0.95
 for e_e_interaction in stoner  ; do
 
 $ECHO 'electronic interaction' $e_e_interaction
-cat > results/Etot_vs_theta.$e_e_interaction.dat << EOF
-@# theta  Etot(eV)
-EOF
-
 
 for theta in 0 10 20 30 40 50 60 70 80 90 ; do
 
@@ -121,23 +117,15 @@ cat > band/in_energy.txt<<EOF
  /
 EOF
 
-cat > band/in_dos.txt<<EOF
-&dos
- nen=100
- na_dos=1
- ia= 1
-en_min=-10
- en_max=10
+cat > band/in_band.txt<<EOF
+&band
  /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+# Run bands
+$BIN_DIR/bands.x 
 
 cp band/band.dat results/band$theta.dat
 

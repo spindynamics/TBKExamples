@@ -9,15 +9,22 @@ if test "`echo -e`" = "-e" ; then ECHO=echo ; else ECHO="echo -e" ; fi
 $ECHO
 $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
-$ECHO "This example shows how to use TBKOSTER.x to calculate a Fe cuboctahedron cluster"
-$ECHO "verbose=.true. and the relaxation process is saved in scf->vizualization with ovito"
+$ECHO "This example shows how to use TBKOSTER.x to calculate the E(theta) MAE of a Fe cluster using penalization"
+$ECHO "a similar calculation could be done for E(theta,phi)"
 
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -rf scf
-mkdir scf
-rm -f out*
+rm -rf tempo* *.dat *.txt *.gnuplot *.png 
+
+
+for i in {0..180..5} ; do
+for j in {0..360..5} ; do
+
+theta=$(echo "$i" | bc -l)
+phi=$(echo "$j" | bc -l)
+echo 'theta= ' $theta 'phi= '$phi
+
 
 cat > in_master.txt<<EOF
 &calculation
@@ -38,6 +45,7 @@ cat > in_master.txt<<EOF
  q_d(1) = 7.0
  u_lcn(1)=20
  i_stoner_d(1) = 0.95
+ xi_so_d(1)=0.06
  /
 &element_tb
  filename(1) = '$TBPARAM_DIR/fe_par_fcc_bcc_sc_gga_fl'
@@ -70,20 +78,21 @@ cat > in_master.txt<<EOF
  r(12,:) =     1.7575089    -1.7575089     0.0000000
  r(13,:) =    -1.7575089    -1.7575089     0.0000000
  m_listing = 'by_atom'
- m(1,:) = 3.0, 0.0, 0.0
- m(2,:) = 3.0, 50.0, 0.0
- m(3,:) = 3.0, 160.0, 10.0
- m(4,:) = 3.0, 60.0, 0.0
- m(5,:) = 3.0, 70.0, 70.0
- m(6,:) = 3.0, 60.0, 50.0 
- m(7,:) = 3.0, 30.0, 0.0
- m(8,:) = 3.0, 60.0, 180.0
- m(9,:) = 3.0, 60.0, 40.0
- m(10,:) = 3.0, 40.0, 20.0
- m(11,:) = 3.0, 60.0, 0.0
- m(12,:) = 3.0, 20.0, 60.0
- m(13,:) = 3.0, 60.0, 0.0
- lambda_pen_listing = 'by_atom'
+ m(1,:) = 3.0,  $theta, $phi
+ m(2,:) = 3.0,  $theta, $phi
+ m(3,:) = 3.0,  $theta, $phi
+ m(4,:) = 3.0,  $theta, $phi
+ m(5,:) = 3.0,  $theta, $phi
+ m(6,:) = 3.0,  $theta, $phi
+ m(7,:) = 3.0,  $theta, $phi
+ m(8,:) = 3.0,  $theta, $phi
+ m(9,:) = 3.0,  $theta, $phi
+ m(10,:) = 3.0, $theta, $phi
+ m(11,:) = 3.0, $theta, $phi
+ m(12,:) = 3.0, $theta, $phi
+ m(13,:) = 3.0, $theta, $phi
+ lambda_pen_listing = 'by_tag'
+lambda_pen(1) = 5.0
  /
 &mesh
  type = 'mp'
@@ -91,26 +100,53 @@ cat > in_master.txt<<EOF
  dx = 0, 0, 0
  /
 &hamiltonian_tb
+m_penalization = 'theta,phi'
  /
 &energy
  smearing = 'mv'
  degauss = 0.05
  /
 &mixing
- alpha = 0.1
+ alpha = 0.2
  /
 &scf
- delta_en=0.0001
- delta_q=0.0001
- verbose=.true.
- ni_max=200
+ delta_en=0.00001
+ delta_q=0.00001
+ verbose=.false.
+ ni_max=2000
  /
 EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
 
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+
+cat > tempo << EOF
+thetaphi= $theta  $phi
+EOF
+
+cat tempo out_energy.txt>>tempo2
+done
+done
+grep -e 'thetaphi=' -e 'en =' tempo2 | awk '/thetaphi/{theta = $(NF-1)}/thetaphi/{phi = $(NF)}/en/{print theta, phi, $(NF)}' >> Etot_vs_theta_phi.dat
+
+rm -f tempo*
+
+E0=$(grep -m1 "0 0" Etot_vs_theta_phi.dat | awk '{print $NF}')
+
+cat > MAE.gnuplot<<EOF
+set term png enh size 700,500
+set out 'Etot_vs_theta_phi.png'
+set angles degrees
+set view equal xy 
+splot "Etot_vs_theta_phi.dat" using (1000*(\$3-$E0)*sin(\$1)*cos(\$2)):(1000*(\$3-$E0)*sin(\$1)*sin(\$2)):(1000*(\$3-$E0)*cos(\$1))
+EOF
+
+# Display the results
+if ! command -v gnuplot &> /dev/null
+then 
+    $ECHO "The gnuplot command cound not be found. Please install gnuplot."
+    exit 1
+else 
+    gnuplot MAE.gnuplot
+fi

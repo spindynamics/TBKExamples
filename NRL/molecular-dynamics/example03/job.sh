@@ -11,20 +11,26 @@ $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
 $ECHO "This example shows how to use TBKOSTER.x to compute the forces on a trimer"
 
-# checking scf folder existence
-if [ ! -d "./scf" ]; then 
-mkdir -p ./scf
-fi
 
 # removing things before computation
-rm -f out_* in_master* results.dat
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf
+
+mkdir scf
 
 # set the needed environment variables
 . ../../../environment_variables
 
-y=$(echo "sqrt(3.0)" | bc -l)
+#y=$(echo "sqrt(3.0)" | bc -l)
 
-cat > in_master2.txt<<EOF
+END=30
+
+for ((i=0;i<=END;i++)); do
+
+y=$(echo "scale=5;sqrt(3.0)+($i-$END/2)/$END"| bc -l)
+
+echo "y= $y"
+
+cat > in_master.txt<<EOF
 &calculation
  processing = 'scf'
  post_processing= 'forces'
@@ -44,7 +50,7 @@ cat > in_master2.txt<<EOF
  u_lcn(1)=20
  /
 &element_tb
- filename(1) = 'TBPARAM_DIR/pt_par_fcc_bcc_sc_lda_fl'
+ filename(1) = '$TBPARAM_DIR/pt_par_fcc_bcc_sc_lda_fl'
  /
 &lattice
  v_factor = 1.0
@@ -89,26 +95,33 @@ cat > in_master2.txt<<EOF
  /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|TBPARAM_DIR|$TBPARAM_DIR|g" in_master2.txt >in_master.txt
-rm -f in_master2.txt
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x
 
 en=$(grep "en =" ./out_energy.txt | cut -d"=" -f2)
 
-Fx1=$(grep "Atom 1" ./scf/out_log.txt | cut -d"=" -f2 | cut -d"F" -f1)
-Fy1=$(grep "Atom 1" ./scf/out_log.txt | cut -d"=" -f3 | cut -d"F" -f1)
-Fz1=$(grep "Atom 1" ./scf/out_log.txt | cut -d"=" -f4)
-F1=$(echo "scale=4; sqrt(${Fx1}*${Fx1}+${Fy1}*${Fy1}+${Fz1}*${Fz1})" | bc -l)
-Fx2=$(grep "Atom 2" ./scf/out_log.txt | cut -d"=" -f2 | cut -d"F" -f1)
-Fy2=$(grep "Atom 2" ./scf/out_log.txt | cut -d"=" -f3 | cut -d"F" -f1)
-Fz2=$(grep "Atom 2" ./scf/out_log.txt | cut -d"=" -f4)
-F2=$(echo "scale=4; sqrt(${Fx2}*${Fx2}+${Fy2}*${Fy2}+${Fz2}*${Fz2})" | bc -l)
-Fx3=$(grep "Atom 3" ./scf/out_log.txt | cut -d"=" -f2 | cut -d"F" -f1)
-Fy3=$(grep "Atom 3" ./scf/out_log.txt | cut -d"=" -f3 | cut -d"F" -f1)
-Fz3=$(grep "Atom 3" ./scf/out_log.txt | cut -d"=" -f4)
-F2=$(echo "scale=4; sqrt(${Fx2}*${Fx2}+${Fy2}*${Fy2}+${Fz2}*${Fz2})" | bc -l)
+Fx1=$(grep -e 'f(1' scf/out_log.txt| awk '/f/{print $(NF-2)}'| sed -e 's/,//g')
+Fy1=$(grep -e 'f(1' scf/out_log.txt| awk '/f/{print $(NF-1)}'| sed -e 's/,//g')
+Fz1=$(grep -e 'f(1' scf/out_log.txt| awk '/f/{print $(NF)}'| sed -e 's/,//g')
+F1=$(echo "scale=4;sqrt(${Fx1}*${Fx1}+${Fy1}*${Fy1}+${Fz1}*${Fz1})" | bc -l)
+Fx2=$(grep -e 'f(2' scf/out_log.txt| awk '/f/{print $(NF-2)}'| sed -e 's/,//g')
+Fy2=$(grep -e 'f(2' scf/out_log.txt| awk '/f/{print $(NF-1)}'| sed -e 's/,//g')
+Fz2=$(grep -e 'f(2' scf/out_log.txt| awk '/f/{print $(NF)}'| sed -e 's/,//g')
+F2=$(echo "scale=4;sqrt(${Fx2}*${Fx2}+${Fy2}*${Fy2}+${Fz2}*${Fz2})" | bc -l)
+Fx3=$(grep -e 'f(3' scf/out_log.txt| awk '/f/{print $(NF-2)}'| sed -e 's/,//g')
+Fy3=$(grep -e 'f(3' scf/out_log.txt| awk '/f/{print $(NF-1)}'| sed -e 's/,//g')
+Fz3=$(grep -e 'f(3' scf/out_log.txt| awk '/f/{print $(NF)}'| sed -e 's/,//g')
+F3=$(echo "scale=4;sqrt(${Fx3}*${Fx3}+${Fy3}*${Fy3}+${Fz3}*${Fz3})" | bc -l)
 
-echo ${z} ${en} ${Fx1} ${Fy1} ${Fz1} ${Fx2} ${Fy2} ${Fz2} ${Fx3} ${Fy3} ${Fz3} >> results.dat
+sumx=$(echo "${Fx1}+${Fx2}+${Fx3}"| bc -l)
+sumy=$(echo "${Fy1}+${Fy2}+${Fy3}"| bc -l)
+sumz=$(echo "${Fz1}+${Fz2}+${Fz3}"| bc -l)
+
+echo ${y} ${en} ${Fx1} ${Fy1} ${Fz1} ${F1} >> results.dat
+echo ${y} ${en} ${Fx2} ${Fy2} ${Fz2} ${F2} >> results.dat
+echo ${y} ${en} ${Fx3} ${Fy3} ${Fz3} ${F3} >> results.dat
+
+echo  ${sumx} ${sumy} ${sumz} >> results.dat
+
+done

@@ -14,9 +14,10 @@ $ECHO "This example shows how to use TBKOSTER.x to calculate the PDOS of Ni mono
 # set the needed environment variables
 . ../../../environment_variables
 
+rm -rf tempo* *.dat *.txt *.gnuplot *.png dos scf results
+
 a=2.88499566724111
-rm -f out*
-mkdir scf
+mkdir scf dos
 
 cat > in_master.txt<<EOF
 &calculation
@@ -56,8 +57,8 @@ cat > in_master.txt<<EOF
  ns = 2
  na = 15
  ntag = 3
- tag(1) = 'Au' 
- tag(2) = 'Ni'
+ tag(1) = 'Ni' 
+ tag(2) = 'Au'
  tag(3) = 'Au_surf'
  stag(1)=1
  stag(2)=13 
@@ -106,8 +107,8 @@ EOF
 cat > dos/in_dos.txt<<EOF
 &dos
  nen=100
- na_dos=1
- ia= 1
+ na_dos=3
+ ia= 1, 8, 15
  en_min=-10
  en_max=10
  /
@@ -131,10 +132,8 @@ cat > dos/in_mesh.txt<<EOF
 EOF
 
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+# Run pdos
+$BIN_DIR/pdos.x 

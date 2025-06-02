@@ -14,9 +14,11 @@ $ECHO "Dampled spin dynamics of a 5 atoms Fe chain at several lattice parameters
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -fr sd a* *.txt *.lammpstrj
+rm -rf tempo* *.dat *.txt *.gnuplot *.png sd a*
+mkdir sd
 
-for a in 2.05 2.10 2.15 2.20 2.25 2.30 ; do
+#for a in 2.05 2.10 2.15 2.20 2.25 2.30 ; do
+for a in  2.10 ; do
 
 mkdir a$a
 
@@ -27,7 +29,7 @@ cat > in_master.txt<<EOF
  energy = 'eV'
  length = 'ang'
  time = 'fs'
- mass = 'hau'
+ mass='hau'
  /
 &calculation
  processing = 'sd'
@@ -39,9 +41,9 @@ cat > in_master.txt<<EOF
  symbol(1) = 'Fe'
  q(1) = 8.0
  q_d(1) = 7.0
- u_lcn(1) = 20.0
+ u_lcn(1) = 20.0000000000000000
  i_stoner_d(1) = 0.95
- xi_so_d(1) = 6.0E-002
+ xi_so_d(1) = 5.9999999999999998E-002
  /
 &element_tb
  filename(1) = '$TBPARAM_DIR/fe_par_fcc_bcc_sc_gga_fl'
@@ -65,7 +67,7 @@ cat > in_master.txt<<EOF
  r(4,:) = 0.0000000000000000, 0.0000000000000000, 0.6
  r(5,:) = 0.0000000000000000, 0.0000000000000000, 0.8
  m_listing = 'by_atom'
- m(1,:) = 3.1800000000000000, 1.0000000000000000, 0.0000000000000000
+ m(1,:) = 3.1800000000000000, 45.0000000000000000, 0.0000000000000000
  m(2,:) = 3.1800000000000000, 0.0000000000000000, 0.0000000000000000
  m(3,:) = 3.1800000000000000, 0.0000000000000000, 0.0000000000000000
  m(4,:) = 3.1800000000000000, 0.0000000000000000, 0.0000000000000000
@@ -102,7 +104,7 @@ cat > in_master.txt<<EOF
  fixed_time_step = .true.
  alpha = 1.0
  temp = 0.0
- verbose = .false.
+ verbose = .true.
  /
 EOF
 
@@ -112,3 +114,4 @@ $BIN_DIR/TBKOSTER.x
 cp -rf sd a$a
 
 done
+

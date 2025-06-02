@@ -9,13 +9,14 @@ if test "`echo -e`" = "-e" ; then ECHO=echo ; else ECHO="echo -e" ; fi
 $ECHO
 $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
-$ECHO "This example shows how to use TBKOSTER.x to calculate the PDOS of Co-Pt L10"
+$ECHO "This example shows how to use TBKOSTER.x to calculate the total energy of Co-Pt L10 as a function of c/a at constant volume"
 
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f out*
-mkdir scf
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf results
+
+mkdir scf results
 
 cat > results/Etot_vs_covera_FM.dat << EOF
 @# c/a  Etot(eV)
@@ -86,7 +87,7 @@ cat > in_master.txt<<EOF
  /
 &mesh
  type = 'mp'
- gx = 15, 15, 15
+ gx = 10, 10, 10
  dx = 0, 0, 0
  /
 &hamiltonian_tb
@@ -124,4 +125,4 @@ done
 
 grep -e 'covera=' -e 'en =' tempo2 | awk '/covera/{covera = $(NF)}/en/{print covera, $(NF)}' >> results/Etot_vs_covera_FM.dat
 
-rm -f tempo tempo2 
+rm -f tempo*

@@ -5,16 +5,15 @@ export LC_ALL
 
 ######## YOU MAY NEED TO EDIT THIS FILE TO MATCH YOUR CONFIGURATION ########
 
-# TBKOSTER_ROOT = absolute path to code directory
 # BIN_DIR = path of compiled executables
-#     Usually this is ${TBKOSTER_ROOT}/build/bin, where ${TBKOSTER_ROOT} 
-#     is the root of the TBKOSTER source tree.
+#     Usually this is $PREFIX/build/bin, where $PREFIX is the root of the
+#     TBKOSTER source tree.
 # TBPARAM_DIR = directory to be used to get the Tight-Binding parameters,
 #     where a collection of various files is used to run the provided 
-#     examples. Usually this is ${TBKOSTER_ROOT}/tb_parameters.
+#     examples
 
 # The following should be good for most cases 
 
-TBKOSTER_ROOT=
-BIN_DIR=${TBKOSTER_ROOT}/build/bin
-TBPARAM_DIR=${TBKOSTER_ROOT}/tb_parameters
+PREFIX=`cd ../../../../../ ; pwd`
+BIN_DIR=${PREFIX}/TBKOSTER/linux/bin
+TBPARAM_DIR=${PREFIX}/TBKOSTER/tb_parameters

@@ -14,8 +14,8 @@ $ECHO "This example shows how to use TBKOSTER.x to compute the forces on a Pt di
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f tempo tempo2
-rm -f Etot_vs_force*
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf
+mkdir scf
 
 cat > Etot_vs_forces.dat << EOF
 @# a f Etot
@@ -47,7 +47,7 @@ cat > in_master.txt<<EOF
  u_lcn(1)=20
  /
 &element_tb
- filename(1) = 'TBPARAM_DIR/pt_par_fcc_bcc_sc_lda_fl'
+ filename(1) = '$TBPARAM_DIR/pt_par_fcc_bcc_sc_lda_fl'
  /
 &lattice
  v_factor =${a}
@@ -91,10 +91,6 @@ cat > in_master.txt<<EOF
  /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|TBPARAM_DIR|$TBPARAM_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x
 
@@ -102,14 +98,13 @@ cat > alat << EOF
 a= $a
 EOF
 
-grep Fz ./scf/out_log.txt | awk '{print $8}' | head -1 > fz
+grep -e 'f(1' scf/out_log.txt| awk '/f/{print $(NF)}' >fz
 
 grep -e 'a=' alat | awk '{print $2}' > a
 
 grep -e 'en =' out_energy.txt | awk '{print $3}' > en
 
 paste a fz en >> Etot_vs_forces.dat
-
 done
 
 rm -f fz en a

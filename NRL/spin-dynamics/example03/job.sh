@@ -14,14 +14,17 @@ $ECHO "Damped Spin Dynamics of a Cr trimer-> Converge towards Neel structure."
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -fr sd *.txt
+rm -rf tempo* *.dat *.txt *.gnuplot *.png sd
+mkdir sd
+
+
 
 cat > in_master.txt<<EOF
 &units
  energy = 'eV'
  length = 'ang'
  time = 'fs'
- mass = 'hau'
+ mass='hau'
  /
 &calculation
  processing = 'sd'
@@ -84,6 +87,7 @@ cat > in_master.txt<<EOF
  delta_en = 0.00001
  delta_q  = 0.00001
  verbose = .false.
+  ni_max=100
  /
 &sd
  integrator = 'st_1'
@@ -93,9 +97,11 @@ cat > in_master.txt<<EOF
  fixed_time_step = .true.
  alpha = 1.0
  temp = 0.0
- verbose = .false.
+ verbose = .true.
  /
 EOF
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+
+

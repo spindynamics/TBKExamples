@@ -14,8 +14,8 @@ $ECHO "This example shows how to use TBKOSTER.x to calculate the total energy an
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f tempo tempo2 tempo3 tempo4
-rm -f out*
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf
+
 mkdir scf
 
 cat > Etot_vs_a.dat << EOF

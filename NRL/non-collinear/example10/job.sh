@@ -9,14 +9,14 @@ if test "`echo -e`" = "-e" ; then ECHO=echo ; else ECHO="echo -e" ; fi
 $ECHO
 $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
-$ECHO "This example shows how to use TBKOSTER.x to calculate the PDOS of Co-Pt L10"
+$ECHO "This example shows how to use TBKOSTER.x to calculate the total energy of Co-Pt L10 a function of c/a cte volume"
 
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -rf results
+rm -rf tempo* *.dat *.txt *.gnuplot *.png results band
+
 mkdir results
-rm -f out*
 
 for theta in 0 90 ; do
 
@@ -25,11 +25,11 @@ cat > results/Etot_vs_covera_FM.theta$theta.dat << EOF
 EOF
 
 $ECHO "theta= $theta"
-rm -f tempo tempo2
+rm -f tempo*
 
 v=27.5
 
-a=2.68378136158666993601
+#a=2.68378136158666993601
 
 for covera in 1.27 1.28 1.30 1.31 1.32 1.33 1.34 1.35 1.36 1.37 1.38 1.39 1.40 1.41 1.42 1.43 1.44 1.45; do
 a=$(echo "e(0.3333333333*l($v/$covera)) " |bc -l)
@@ -111,11 +111,6 @@ cat > in_master.txt<<EOF
  /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
 
@@ -129,6 +124,6 @@ done
 
 grep -e 'covera=' -e 'en =' tempo2 | awk '/covera/{covera = $(NF)}/en/{print covera, $(NF)}' >> results/Etot_vs_covera_FM.theta$theta.dat
 
-rm -f tempo tempo2 
+rm -f tempo*
 
 done

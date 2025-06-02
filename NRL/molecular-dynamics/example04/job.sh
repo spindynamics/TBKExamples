@@ -14,28 +14,32 @@ $ECHO "This example shows how to use TBKOSTER.x to compute the forces"
 # set the needed environment variables
 . ../../../environment_variables
 
-# checking scf folder existence
-if [ ! -d "./scf" ]; then 
-    mkdir -p ./scf
-fi
+# removing things before computation
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf
 
-rm -f results.dat
+mkdir scf
 
 print_forces(){
-    Fx1=$(grep "Atom 1" ./scf/out_log.txt | cut -d"=" -f2 | cut -d"F" -f1)
-    Fy1=$(grep "Atom 1" ./scf/out_log.txt | cut -d"=" -f3 | cut -d"F" -f1)
-    Fz1=$(grep "Atom 1" ./scf/out_log.txt | cut -d"=" -f4)
-    Fx2=$(grep "Atom 2" ./scf/out_log.txt | cut -d"=" -f2 | cut -d"F" -f1)
-    Fy2=$(grep "Atom 2" ./scf/out_log.txt | cut -d"=" -f3 | cut -d"F" -f1)
-    Fz2=$(grep "Atom 2" ./scf/out_log.txt | cut -d"=" -f4)
+Fx1=$(grep -e 'f(1' scf/out_log.txt| awk '/f/{print $(NF-2)}'| sed -e 's/,//g')
+Fy1=$(grep -e 'f(1' scf/out_log.txt| awk '/f/{print $(NF-1)}'| sed -e 's/,//g')
+Fz1=$(grep -e 'f(1' scf/out_log.txt| awk '/f/{print $(NF)}'| sed -e 's/,//g')
+F1=$(echo "scale=4;sqrt(${Fx1}*${Fx1}+${Fy1}*${Fy1}+${Fz1}*${Fz1})" | bc -l)
+Fx2=$(grep -e 'f(2' scf/out_log.txt| awk '/f/{print $(NF-2)}'| sed -e 's/,//g')
+Fy2=$(grep -e 'f(2' scf/out_log.txt| awk '/f/{print $(NF-1)}'| sed -e 's/,//g')
+Fz2=$(grep -e 'f(2' scf/out_log.txt| awk '/f/{print $(NF)}'| sed -e 's/,//g')
+F2=$(echo "scale=4;sqrt(${Fx2}*${Fx2}+${Fy2}*${Fy2}+${Fz2}*${Fz2})" | bc -l)
+sumx=$(echo "${Fx1}+${Fx2}"| bc -l)
+sumy=$(echo "${Fy1}+${Fy2}"| bc -l)
+sumz=$(echo "${Fz1}+${Fz2}"| bc -l)
     en=$(grep "en =" ./out_energy.txt | cut -d"=" -f2)
     x=$(echo "sqrt(3)*${z}*${v_factor}" | bc -l)
-    echo ${k} ${x} ${en} ${Fx1} ${Fy1} ${Fz1} ${Fx2} ${Fy2} ${Fz2} >> results.dat
+    echo ${k} ${x} ${en} ${Fx1} ${Fy1} ${Fz1} ${F1} ${Fx2} ${Fy2} ${Fz2} ${F2}>> results.dat
+echo  ${sumx} ${sumy} ${sumz} >> results.dat
 }
 
 v_factor=6.0
 epsilon=0.001
-evaluated_z=0.45
+evaluated_z=0.5
 
 for k in 10; do
 
@@ -65,7 +69,7 @@ cat > in_master.txt<<EOF
  u_lcn(1)=20
  /
 &element_tb
- filename(1) = 'TBPARAM_DIR/pt_par_fcc_bcc_sc_lda_fl'
+ filename(1) = '$TBPARAM_DIR/pt_par_fcc_bcc_sc_lda_fl'
  /
 &lattice
  v_factor = ${v_factor}
@@ -108,9 +112,6 @@ cat > in_master.txt<<EOF
  /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|TBPARAM_DIR|$TBPARAM_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x

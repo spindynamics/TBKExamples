@@ -16,14 +16,14 @@ $ECHO "the calculation are made at various Stoner parameters"
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f out*
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf results
 
-mkdir results
+mkdir results scf
 
 for IStoner in 0.90 0.95 1.00 1.05 1.10 1.15 1.20 ; do
 echo "IStoner= $IStoner"
 
-rm -f tempo tempo2 tempo3 tempo4
+rm -f tempo*
 
 cat > results/Etot_vs_a.I$IStoner.dat << EOF
 @#  a(A)  Etot(eV)
@@ -120,5 +120,6 @@ done
 grep -e 'a=' -e 'en =' tempo2 | awk '/a/{a = $(NF)}/en/{print a, $(NF)}' >> results/Etot_vs_a.I$IStoner.dat
 grep -e 'a=' -e 'm_r_tot =' tempo4 | awk '/a/{a = $(NF)}/m_r_tot/{print a, $(NF-1)}' >> results/M_vs_a.I$IStoner.dat
 
-rm -f tempo tempo2 tempo3 tempo4
 done
+
+rm -f tempo*

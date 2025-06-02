@@ -1,27 +1,51 @@
-Two types of constraints:\
-m_penalization='none' = no constraint\
-m_penalization='r' = constraint on the magnetization vector **M**
-
-|Description|Example|
-|:---|:---:|
-|Calculation of energy vs lattice parameter curve of fcc Pt| **example01**|
-|Self consistent calculation of the (111) surface of Pt. projected DOS calculation for the surface atom |**example02**|
-|Self consistent calculation of the (111) surface of Pt. band structure calculation |**example03**|
-|Self consistent calculation of magnetic bcc Fe at several lattice parameters,then as an output we can plot Etot_vs_a.dat and M_vs_a.dat|**example04**|
-|Self consistent calculation of bcc Fe for fixed-spin-moment (fixed_spin_moment=T) at various values of M to get E(M)|**example05**|
-|Comparison with SCF of Fe-bcc with penalization on the total moment of the type lambda(M-Mo)^2. Here the bcc is described by a cubic lattice with 2 atoms per unit cell and the penalization is only on atom 1. Atom is free to adapt.. |**example06**|
-|Self consistent calculation of iron cluster (cuboctahedron) verbose=.true. and the relaxation process is saved in scf->vizualization with ovito | **example07**|
-|Magnetization of Rh as a function of the lattice parameter and band structure of Rh.|**example08**|
-|Study of the influence of the number of k points on the total energy and study of the influence of the smearing technique on the total energy|**example09**|
-|Self consistent calculation of a 5 atom of Fe in a wire with penalization on atom 1 m1=3 m2,m3,m4,m5 is free|**example10**|
-|Chromium bcc: magnetism as a function of lattice parameter|**example11**|
-|Self consistent calculation of fcc-Co at several lattice parameters|**example12**|
-|Apparition of magnetic moment with expansion of the lattice parameter for pcc-Pt|**example13**|
-|Au(111) fcc surface scf calculation. Projected DOS calculation for the surface atom|**example14**|
-|Au(111) fcc surface band structure calculation. To accelerate the scf calculation one can cp the out_charge.txt of example14 into in_charge.txt of example15 so that the scf calculation will restart from a converged charge. The band structure calculation is performed. Remakable agreement with pwscf calculation (Surf. Sci. 602, (2008) 893, Fig. 2)|**example15**|
-|Ni fcc magnetic with respect to lattice parameter: study of the influence of the Stoner parameter->comparison with _ab-initio_|**example16**|
-|Ni monolayer on Au fcc(111) interface, magnetic calculation|**example17**|
-|Co-Pt L10 scf + DOS|**example18**|
-|Fe-Pt L10 Etot(c/a) for FM and AF|**example19**|
-|This example shows how to use TBKOSTER.x to calculate the total energy of zirconium fcc, bcc and hcp(c/a)|**example25**|
-|This example shows how to use TBKOSTER.x to explore the magnetic configuration FM and AFM (+ continuous transition between the two) of B2 FeRh. For lattice parameters below a=3A the system is AFM while it becomes FM above a=3A. This is in perfect agreement with DFT calculations.|**example26**|
+# collinear examples
+example01
+ "This example shows how to use TBKOSTER.x to calculate the total energy vs a of Ptfcc"
+example02
+$ECHO "This example shows how to use TBKOSTER.x to calculate PDOS of a Pt(111) surface"
+example03
+ "This example shows how to use TBKOSTER.x to calculate the band structure of Pt(111)"
+example04
+ "This example shows how to use TBKOSTER.x to calculate the total energy vs a of Febcc FM"
+example05
+ "This example shows how to use TBKOSTER.x to calculate the total energy vs magnetization of Febcc"
+ "fixed spin moment calculation"
+example06
+ "This example shows how to use TBKOSTER.x to calculate the total energy vs magnetization of Febcc"
+ "penalization technique"
+example07
+ "This example shows how to use TBKOSTER.x to calculate a Fe cluster"
+example08
+ "This example shows how to use TBKOSTER.x to calculate the magnetization of Rhfcc as a function of lattice constant"
+ "magnetization appears for lattice parameters above 4.3.."
+ "This example shows how to use TBKOSTER.x to calculate band structure of Rhfcc"
+example09
+ "This example shows how to use TBKOSTER.x to evaluate the influence of number of kpoints"
+ "nK=" $nK"x"$nK"x"$nK
+ "This example shows how to use TBKOSTER.x to evaluate the influence of the smearing method"
+example10
+ 'SCF collinear spin calculation of a 5-atom Fe wire with magnetic penalization on atom 1'
+ "penalization technique"
+example11
+ "This example shows how to use TBKOSTER.x to calculate the total energy and magnetization vs a of Crbcc AF"
+ "penalization technique"
+example12
+ "This example shows how to use TBKOSTER.x to the total energy and magnetization versus a for Cofcc"
+example13
+ "This example shows how to use TBKOSTER.x to calculate the total energy and magnetization versus a for Ptfcc"
+example14
+ "This example shows how to use TBKOSTER.x to calculate the PDOS for Au(111) "
+example15
+ "This example shows how to use TBKOSTER.x to calculate the band structure of Au(111) "
+  "To accelerate the scf calculation the out_charge.txt of example 14 is copied in in_charge.txt of example 15"
+example16
+ "This example shows how to use TBKOSTER.x to calculate the total energy and magnetization vs a of Nifcc"
+ "the calculation are made at various Stoner parameters"
+example17
+ "This example shows how to use TBKOSTER.x to calculate the PDOS of Ni monolayer of Au(111)"
+example18
+ "This example shows how to use TBKOSTER.x to calculate the PDOS of Co-Pt L10"
+example19
+ "This example shows how to use TBKOSTER.x to calculate the total energy of Co-Pt L10 as a function of c/a at constant volume"
+ example20
+ "This example shows how to use TBKOSTER.x to calculate the Fermi surface of Cu bulk and Ni bulk"

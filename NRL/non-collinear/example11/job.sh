@@ -12,14 +12,16 @@ $ECHO
 $ECHO "SCF NON-collinear spin calculation of a 4-atom Fe wire"
 $ECHO "The initial magnetization is a spin spiral of period 5a "
 $ECHO "Due to periodic boundary conditions the spin spiral configuration is kept during scf"
+$ECHO "The calculation is compared with the generalized Bloch theorem spin spiral and to the collinear case "
 
 # set the needed environment variables
 . ../../../environment_variables
 
-mkdir scf
-rm -rf results
+rm -rf tempo* *.dat *.txt *.gnuplot *.png results band
+
 mkdir results
-rm -rf out*
+mkdir scf
+
 
 $ECHO "super-cell (4 atoms) calculation"
 
@@ -98,10 +100,6 @@ ni_max=500
 /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
@@ -175,11 +173,6 @@ ni_max=500
 /
 EOF
 
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
 
@@ -250,10 +243,6 @@ verbose = .true.
 ni_max=500
 /
 EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
 
 
 # Run TBKOSTER

@@ -16,8 +16,9 @@ $ECHO "during scf the spin tend do align and the magnetization of atom 1 is the 
 # set the needed environment variables
 . ../../../environment_variables
 
+rm -rf tempo* *.dat *.txt *.gnuplot *.png band scf
+
 mkdir scf
-rm -f out*
 
 cat > in_master.txt<<EOF
 &units
@@ -92,11 +93,6 @@ verbose = .true.
 ni_max=200
 /
 EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 

@@ -15,6 +15,11 @@ $ECHO
 
 # set the needed environment variables
 . ../../../environment_variables
+ulimit -s unlimited
+
+rm -rf tempo* *.dat *.txt *.gnuplot *.png results band
+
+mkdir band
 
 a=2.88499566724111
 
@@ -34,12 +39,12 @@ cat > in_master.txt<<EOF
  symbol(1) = 'Au'
  q(1)   = 11.0
  q_d(1) = 10
- u_lcn(1)=20
+ u_lcn(1)=0
  xi_so_d(1)=0.65
  xi_so_p(1)=1.0
  /
 &element_tb
- filename(1) = '$TBPARAM_DIR/au_par_fcc_bcc_sc_lda_fl'
+ filename(1) = '$TBPARAM_DIR/au_par'
  /
 &lattice
  v_factor = $a
@@ -49,10 +54,10 @@ cat > in_master.txt<<EOF
  /
 &atom
  ns = 4
- na = 50
+ na = 20
  ntag = 1
  tag(1) = 'Au'
- stag(1)=50
+ stag(1)=20
  pbc = 5, 5, 0
  r_coord='cartesian'
  r(1,:) =      0.0000000     0.0000000     0.0000000
@@ -75,36 +80,6 @@ cat > in_master.txt<<EOF
  r(18,:) =    -1.4424978     0.8328265   -40.0450134
  r(19,:) =    -0.0000000     0.0000000   -42.4006042
  r(20,:) =     1.4424978    -0.8328265   -44.7561951
- r(21,:) =    -1.4424978     0.8328265   -47.1117821
- r(22,:) =    -0.0000000     0.0000000   -49.4673729
- r(23,:) =     1.4424978    -0.8328265   -51.8229599
- r(24,:) =    -1.4424978     0.8328265   -54.1785469
- r(25,:) =     0.0000000     0.0000000   -56.5341415
- r(26,:) =     1.4424978    -0.8328265   -58.8897285
- r(27,:) =    -1.4424978     0.8328265   -61.2453156
- r(28,:) =     0.0000000     0.0000000   -63.6009064
- r(29,:) =     1.4424978    -0.8328265   -65.9564972
- r(30,:) =    -1.4424978     0.8328265   -68.3120804
- r(31,:) =     0.0000000     0.0000000   -70.6676712
- r(32,:) =     1.4424978    -0.8328265   -73.0232620
- r(33,:) =    -1.4424978     0.8328265   -75.3788528
- r(34,:) =     0.0000000     0.0000000   -77.7344437
- r(35,:) =     1.4424978    -0.8328265   -80.0900269
- r(36,:) =    -1.4424978     0.8328265   -82.4456253
- r(37,:) =    -0.0000000     0.0000000   -84.8012085
- r(38,:) =     1.4424978    -0.8328265   -87.1567993
- r(39,:) =    -1.4424978     0.8328265   -89.5123901
- r(40,:) =    -0.0000000     0.0000000   -91.8679733
- r(41,:) =     1.4424978    -0.8328265   -94.2235641
- r(42,:) =    -1.4424978     0.8328265   -96.5791550
- r(43,:) =    -0.0000000     0.0000000   -98.9347458
- r(44,:) =     1.4424978    -0.8328265  -101.2903290
- r(45,:) =    -1.4424978     0.8328265  -103.6459198
- r(46,:) =    -0.0000000     0.0000000  -106.0015182
- r(47,:) =     1.4424978    -0.8328265  -108.3570938
- r(48,:) =    -1.4424978     0.8328265  -110.7126923
- r(49,:) =     0.0000000     0.0000000  -113.0682831
- r(50,:) =     1.4424978    -0.8328265  -115.4238663
  /
 &mesh
  type = 'mp'
@@ -143,28 +118,47 @@ cat > band/in_mesh.txt <<EOF
  xs(4,:) = 0 ,  0 , 0
 /
 EOF
-#cat > band/in_dos.txt <<EOF
-#&dos
-# nen=100
-# na_dos=1
-# ia= 1
-# en_min=-10
-# en_max=10
-# /
-#EOF
-#cat > band/in_energy.txt <<EOF
-#&energy
-# smearing = 'mv'
-# degauss = 0.2
-# en_min = -10.0
-# en_max =  10.0
-# /
-#EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
+cat > band/in_band.txt <<EOF
+&band
+proj='site'
+na_band=2
+ia_band= 1, 10
+ /
+EOF
 
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+
+# Run bands
+$BIN_DIR/bands.x 
+
+# Plot the results
+cat > band/band_weight.gnuplot<<EOF
+set term png enh size 700,500
+set out 'band/projbands.png'
+#set xtics ("{/Symbol G}"0,"M"0.57735,"K"0.91068,"{/Symbol G}"1.57735)
+set xrange [*:*] ; set yrange [*:*]
+set grid xtics
+stats 'band/band_weight_site_orb.dat'  u 1:2 nooutput
+set xra [STATS_min_x:STATS_max_x]
+set yra [STATS_min_y:STATS_max_y]
+set xlabel "k"
+set ylabel "E - E_F (eV)"
+set xzeroaxis
+set key opaque box width 1.0
+set style fill solid noborder
+radius(proj)=proj/200.
+#plot 'band/band_weight.dat' u 1:2 lc rgb "grey" 
+plot 'band/band_weight_site_orb.dat' i 0 u 1:2:(radius(\$3)) w circles lc rgb "red" t "{surface}", 'band/band_weight_site_orb.dat' i 1 u 1:2:(radius(\$3)) w circles lc rgb "blue" t "{bulk}"
+EOF
+
+# Display the results
+if ! command -v gnuplot &> /dev/null
+then 
+    $ECHO "The gnuplot command cound not be found. Please install gnuplot."
+    exit 1
+else 
+    gnuplot band/band_weight.gnuplot
+fi
+

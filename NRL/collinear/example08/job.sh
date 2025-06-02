@@ -17,13 +17,9 @@ $ECHO
 $ECHO "This example shows how to use TBKOSTER.x to calculate the magnetization of Rhfcc as a function of lattice constant"
 $ECHO "magnetization appears for lattice parameters above 4.3.."
 
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf results band
 
-rm -f tempo tempo2 tempo3 tempo4 
-rm -f in_charge.txt
-rm -f out*
-rm -f scf
 mkdir scf
-rm -f results
 mkdir results
 
 cat > results/Etot_vs_a_fcc.dat << EOF
@@ -81,7 +77,7 @@ m(1,:) =  2.0, 0.0, 0.0
  /
 &mesh
  type = 'mp'
- gx = 20, 20 , 20
+ gx = 10, 10 , 10
  dx = 0, 0, 0
  /
 &hamiltonian_tb
@@ -128,121 +124,7 @@ done
 grep -e 'a=' -e 'en =' tempo2 | awk '/a/{a = $(NF)}/en/{print a, $(NF)}' >> results/Etot_vs_a_fcc.dat
 grep -e 'a=' -e 'm_r_tot =' tempo4 | awk '/a/{a = $(NF)}/m_r_tot/{print a, $(NF-1)}' >> results/M_vs_a_fcc.dat
 
-rm -f tempo tempo2 tempo3 tempo4
-
-
-$ECHO
-$ECHO "$EXAMPLE_DIR : starting"
-$ECHO
-$ECHO "This example shows how to use TBKOSTER.x to calculate the magnetization of Rhbcc as a function of lattice constant"
-$ECHO "magnetization appears for lattice parameters above 4.3.."
-
-
-cat > results/Etot_vs_a_bcc.dat << EOF
-@#  a(A)  Etot(eV)
-EOF
-
-cat > results/M_vs_a_bcc.dat << EOF
-@#  a(A)  Mtot(muB)
-EOF
-
-for i in {29..70..1} ; do
-
-
-a=$(echo "$i/10.0" | bc -l)
-echo a=$(echo "$a" | bc -l)
-
-
-cat > in_master.txt<<EOF
-&calculation
- processing='scf'
- /
-&units
- energy = 'ev'
- length = 'ang'
- time = 'fs'
- mass = 'g/mol'
- /
-&element
- ne = 1
- symbol(1) = 'Rh'
- q(1)   = 9.0
- q_d(1) = 8.0
- u_lcn(1) = 20.0
- i_stoner_d(1) = 0.85
- /
-&element_tb
- filename(1) = '$TBPARAM_DIR/rh_par_fcc_bcc_sc_gga_fl'
- /
-&lattice
- v_factor = $a
- v(1,:) = -0.5,  0.5,  0.5
- v(2,:) =  0.5, -0.5,  0.5
- v(3,:) =  0.5,  0.5, -0.5
- /
-&atom
- ns = 2
- na = 1
- ntag = 1
- stag(1) = 1
- tag(1) = 'Rh'
- r(1,:) = 0.0, 0.0, 0.0
- m_listing = 'by_tag'
- m_coord = 'spherical'
-m(1,:) =  2.0, 0.0, 0.0
- /
-&mesh
- type = 'mp'
- gx = 20, 20 , 20
- dx = 0, 0, 0
- /
-&hamiltonian_tb
- /
-&energy
- smearing = 'mv'
- degauss = 0.1
- /
-&mixing
- alpha = 0.05
-  n_init = 1
-  n_hist = 50
- /
-&scf
- delta_en = 0.0001
- delta_q  = 0.0001
- verbose = .true.
- ni_max = 200
- /
-EOF
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
-
-# Run TBKOSTER
-$BIN_DIR/TBKOSTER.x 
-
-#cp -f out_charge.txt  in_charge.txt
-
-cat > tempo << EOF
-a= $a
-EOF
-
-grep m_r_tot out_log.txt | tail -1 >tempo3
-
-cat tempo out_energy.txt>>tempo2
-cat tempo tempo3>>tempo4
-
-
-
-done
-grep -e 'a=' -e 'en =' tempo2 | awk '/a/{a = $(NF)}/en/{print a, $(NF)}' >> results/Etot_vs_a_bcc.dat
-grep -e 'a=' -e 'm_r_tot =' tempo4 | awk '/a/{a = $(NF)}/m_r_tot/{print a, $(NF-1)}' >> results/M_vs_a_bcc.dat
-
-rm -f tempo tempo2 tempo3 tempo4
-
-
+rm -f tempo*
 
 
 
@@ -251,7 +133,7 @@ $ECHO "$EXAMPLE_DIR : starting"
 $ECHO
 $ECHO "This example shows how to use TBKOSTER.x to calculate band structure of Rhfcc"
 
-
+mkdir band
 a=3.80
 
 $ECHO "a= $a"
@@ -299,7 +181,7 @@ m(1,:) =  1.0, 0.0, 0.0
  /
 &mesh
  type = 'mp'
- gx = 15, 15, 15
+ gx = 10, 10, 10
  dx = 0, 0, 0
  /
 &hamiltonian_tb
@@ -360,25 +242,16 @@ cat > band/in_energy.txt<<EOF
  /
 EOF
 
-cat > band/in_dos.txt<<EOF
-&dos
- nen=100
- na_dos=1
- ia= 1
-en_min=-10
- en_max=10
+cat > band/in_band.txt<<EOF
+&band
  /
 EOF
 
 
-
-
-# Set TBKOSTER root directory in in_master.txt
-sed "s|BIN_DIR|$BIN_DIR|g" in_master.txt >in_master2.txt
-mv -f in_master2.txt in_master.txt
-
-
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+
+# Run bands
+$BIN_DIR/bands.x 
 
 

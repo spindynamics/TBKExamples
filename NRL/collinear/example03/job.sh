@@ -39,23 +39,24 @@ cat > in_master.txt<<EOF
  symbol(1) = 'Pt'
  q(1)   = 10.0
  u_lcn(1)=20
+ xi_so_d(1) = 0.6
  /
 &element_tb
  filename(1) = '$TBPARAM_DIR/pt_par_fcc_bcc_sc_lda_fl'
  /
 &lattice
  v_factor = $a
- v(1,:) = 1.0 0.0 0.0
- v(2,:) =-0.5 0.866025403784438 0
- v(3,:) = 0.0 0.0 10.0 
+ v(1,:) =  1.0 0.0 0.0
+ v(2,:) = -0.5 0.866025403784438 0
+ v(3,:) = 0.0 0.0 1.0 
  /
 &atom
- ns = 1
+ ns = 4
  na = 13
  ntag = 1
  tag(1) = 'Pt'
  stag(1)=13
- pbc = 5, 5, 0
+ pbc = 10, 10, 0
  r_coord='cartesian'
  r(1,:) =     0.0000000     0.0000000	  0.0000000
  r(2,:) =     1.3859293    -0.8001667	 -2.2632132
@@ -73,7 +74,7 @@ cat > in_master.txt<<EOF
  /
 &mesh
  type = 'mp'
- gx = 10, 10, 1
+ gx = 5, 5, 1
  dx = 0, 0, 0
  /
 &hamiltonian_tb
@@ -88,7 +89,7 @@ cat > in_master.txt<<EOF
 &scf
  delta_en=0.0001
  delta_q=0.0001
- verbose=.false.
+ verbose=.true.
  ni_max=200
  /
 EOF
@@ -111,8 +112,9 @@ EOF
 
 cat > band/in_band.txt<<EOF
 &band
- na_band=1
- ia_band=1
+ proj = 'site'
+ na_band=2
+ ia_band=1,2
  /
 EOF
 
@@ -122,7 +124,7 @@ set out 'band/projbands.png'
 #set xtics ("{/Symbol G}"0,"M"0.57735,"K"0.91068,"{/Symbol G}"1.57735)
 set xrange [*:*] ; set yrange [*:*]
 set grid xtics
-stats 'band/band_weight.dat'  u 1:2 nooutput
+stats 'band/band_weight_site_orb.dat'  u 1:2 nooutput
 set xra [STATS_min_x:STATS_max_x]
 set yra [STATS_min_y:STATS_max_y]
 set xlabel "k"
@@ -131,7 +133,7 @@ set xzeroaxis
 set key opaque box width 1.0
 set style fill solid noborder
 radius(proj)=proj/200.
-plot 'band/band_weight.dat' u 1:2 lc rgb "grey" ,'band/band_weight.dat' u 1:2:(radius(\$3)) w circles lc rgb "red" t "{total}"
+plot 'band/band_weight_site_orb.dat' u 1:2 lc rgb "grey" ,'band/band_weight_site_orb.dat' u 1:2:(radius(\$3)) w circles lc rgb "red" t "{total}"
 EOF
 
 # Run TBKOSTER

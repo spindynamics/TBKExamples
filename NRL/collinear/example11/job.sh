@@ -15,8 +15,9 @@ $ECHO "penalization technique"
 # set the needed environment variables
 . ../../../environment_variables
 
-rm -f tempo tempo2 tempo3 tempo4
-rm -f out*
+rm -rf *.dat *.txt *.gnuplot *.png scf
+
+mkdir scf
 cat > Etot_vs_a.dat << EOF
 @#  a(A)  Etot(eV)
 EOF
@@ -25,10 +26,7 @@ cat > M_vs_a.dat << EOF
 @#  a(A)  Mtot(muB)
 EOF
 
-#for a in  2.71  2.72  2.73  2.74  2.75  2.76  2.77  2.78 2.79 2.80 2.81 2.82 2.83  2.84 2.85 2.87 2.88 2.89 2.90 2.91 2.92 2.93 2.94 2.95 3.0 3.10 3.20 3.30 3.40; do
-
-
-for a in  2.91  ; do
+for a in  2.71  2.72  2.73  2.74  2.75  2.76  2.77  2.78 2.79 2.80 2.81 2.82 2.83  2.84 2.85 2.87 2.88 2.89 2.90 2.91 2.92 2.93 2.94 2.95 3.0 3.10 3.20 3.30 3.40; do
 
 
 $ECHO "a= $a"

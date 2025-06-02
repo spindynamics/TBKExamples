@@ -14,11 +14,12 @@ $ECHO "This example shows how to use TBKOSTER.x to calculate the PDOS of Co-Pt L
 # set the needed environment variables
 . ../../../environment_variables
 
+rm -rf tempo* *.dat *.txt *.gnuplot *.png scf dos band
+
+mkdir dos scf
+
 a=2.68378136158666993601
 covera=1.35340237919105196170
-
-rm -f out*
-mkdir scf
 
 cat > in_master.txt<<EOF
 &calculation
@@ -125,3 +126,6 @@ mv -f in_master2.txt in_master.txt
 
 # Run TBKOSTER
 $BIN_DIR/TBKOSTER.x 
+# Run pdos
+$BIN_DIR/pdos.x 
+
